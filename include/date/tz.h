@@ -863,7 +863,12 @@ private:
 inline
 time_zone::time_zone(time_zone&& src)
     : name_(std::move(src.name_))
+#if USE_OS_TZDB
+    , transitions_(std::move(src.transitions_))
+    , ttinfos_(std::move(src.ttinfos_))
+#else  // !USE_OS_TZDB
     , zonelets_(std::move(src.zonelets_))
+#endif  // !USE_OS_TZDB
     , adjusted_(std::move(src.adjusted_))
     {}
 
@@ -872,7 +877,12 @@ time_zone&
 time_zone::operator=(time_zone&& src)
 {
     name_ = std::move(src.name_);
+#if USE_OS_TZDB
+    transitions_ = std::move(src.transitions_);
+    ttinfos_ = std::move(src.ttinfos_);
+#else  // !USE_OS_TZDB
     zonelets_ = std::move(src.zonelets_);
+#endif  // !USE_OS_TZDB
     adjusted_ = std::move(src.adjusted_);
     return *this;
 }
